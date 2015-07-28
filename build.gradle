@@ -34,4 +34,3 @@ dependencies {
 
 defaultTasks ":shadowJar", ":run"
 mainClassName = "space.eidolon.component.config.ConfigPackage"
-
