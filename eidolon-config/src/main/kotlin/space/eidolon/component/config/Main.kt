@@ -19,18 +19,25 @@ import space.eidolon.component.config.parsing.*
  * @param args Application arguments
  */
 fun main(args: Array<String>) {
-    println(PropertyToken("foo"))
+    val lexer = Lexer("""key: "va\"\" testing lue"""")
+    val token1 = lexer.readNextToken()
+    val token2 = lexer.readNextToken()
 
-    println(ArrayStartToken())
-    println(ArrayEndToken())
+    println(token1)
+    println(token2)
 
-    println(ObjectStartToken())
-    println(ObjectEndToken())
-
-    println(NullToken())
-    println(FalseToken())
-    println(TrueToken())
-
-    println(NumberToken("123"))
-    println(StringToken("foo"))
+//    println(PropertyToken("foo"))
+//
+//    println(ArrayStartToken())
+//    println(ArrayEndToken())
+//
+//    println(ObjectStartToken())
+//    println(ObjectEndToken())
+//
+//    println(NullToken())
+//    println(FalseToken())
+//    println(TrueToken())
+//
+//    println(NumberToken("123"))
+//    println(StringToken("foo"))
 }
