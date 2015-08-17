@@ -12,6 +12,9 @@
 package space.eidolon.component.config
 
 import space.eidolon.component.config.parsing.*
+import space.eidolon.component.config.parsing.matcher.PropertyMatcher
+import space.eidolon.component.config.parsing.matcher.StringMatcher
+import java.util.*
 
 /**
  * Config Component Main
@@ -19,25 +22,15 @@ import space.eidolon.component.config.parsing.*
  * @param args Application arguments
  */
 fun main(args: Array<String>) {
+    val tokens = ArrayList<Token>()
     val lexer = Lexer("""key: "va\"\" testing lue"""")
-    val token1 = lexer.readNextToken()
-    val token2 = lexer.readNextToken()
 
-    println(token1)
-    println(token2)
+    lexer.addMatcher(PropertyMatcher())
+    lexer.addMatcher(StringMatcher())
 
-//    println(PropertyToken("foo"))
-//
-//    println(ArrayStartToken())
-//    println(ArrayEndToken())
-//
-//    println(ObjectStartToken())
-//    println(ObjectEndToken())
-//
-//    println(NullToken())
-//    println(FalseToken())
-//    println(TrueToken())
-//
-//    println(NumberToken("123"))
-//    println(StringToken("foo"))
+    while (lexer.hasInput()) {
+        tokens.add(lexer.readNextToken())
+    }
+
+    println(tokens)
 }

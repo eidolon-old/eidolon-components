@@ -9,13 +9,13 @@
  * file that was distributed with this source code.
  */
 
-package space.eidolon.component.config.parsing
+package space.eidolon.component.config.parsing.exception
 
 /**
- * Parser
+ * MatchNotFoundException
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-public class Parser {
-
+public class MatchNotFoundException(message: String) : Exception(message) {
+    constructor() : this("")
 }

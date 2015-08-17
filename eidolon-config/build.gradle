@@ -1,1 +1,5 @@
 mainClassName = "space.eidolon.component.config.ConfigPackage"
+
+dependencies {
+    compile "org.apache.commons:commons-lang3:3.4"
+}

@@ -9,13 +9,13 @@
  * file that was distributed with this source code.
  */
 
-package space.eidolon.component.config.parsing
+package space.eidolon.component.config.parsing.matcher
+
+import space.eidolon.component.config.parsing.Token
 
 /**
- * Parser
+ * MatcherResult
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-public class Parser {
-
-}
+public data class MatcherResult(val token: Token, val rawMatch: String)

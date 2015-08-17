@@ -11,44 +11,62 @@
 
 package space.eidolon.component.config.parsing
 
+import org.apache.commons.lang3.StringEscapeUtils
+import space.eidolon.component.config.parsing.exception.MatchNotFoundException
+import space.eidolon.component.config.parsing.exception.ParseException
+import space.eidolon.component.config.parsing.matcher.Matcher
+import space.eidolon.component.config.parsing.matcher.MatcherResult
+import java.util.*
 import kotlin.text.MatchGroupCollection
-import kotlin.text.MatchResult
-import kotlin.text.Regex
 
 /**
  * Lexer
  *
  * @author Elliot Wright <elliot@elliotwright.co>
  */
-class Lexer(private var input: String) {
-    private val propertyRegex = Regex("""^\s*(\"?)([\w-]+)\1\s*\:\s*""")
-    private val stringRegex = Regex("""^\s*((?<![\\])['"])((?:.(?!(?<![\\])\1))*.?)\1\s*""")
+public class Lexer(private var input: String) {
+    private val matchers = ArrayList<Matcher>()
 
-    fun readNextToken(): Token {
-        // todo: unescape values before assigning to tokens
+    /**
+     * Add a matcher to the internal matcher array
+     */
+    public fun addMatcher(matcher: Matcher) {
+        matchers.add(matcher)
+    }
 
-        var matches: MatchGroupCollection
-        var match: String
-        var token: Token
+    /**
+     * Check if this Lexer has any remaining input to process
+     *
+     * @return True if there is input remaining
+     */
+    public fun hasInput(): Boolean {
+        return input.trim().isNotEmpty()
+    }
 
-        if (propertyRegex.hasMatch(input)) {
-            // ex: (foo:) or ("bar":)
-            matches = propertyRegex.match(input)!!.groups
-            token = PropertyToken(matches.get(2)!!.value)
+    /**
+     * Attempt to read the next token in the current input stream
+     *
+     * @return The next token.
+     * @throws ParseException if no matches are found.
+     */
+    public fun readNextToken(): Token {
+        var result: MatcherResult? = null
 
-        } else if (stringRegex.hasMatch(input)) {
-            // ex: ("foo") or ('bar') or ("baz \"") or ('qux \'')
-            matches = stringRegex.match(input)!!.groups
-            token = StringToken(matches.get(2)!!.value)
-
-        } else {
-            // todo: ParseException
-            throw RuntimeException("Unidentifiable token encountered.")
+        for (matcher in matchers) {
+            try {
+                result = matcher.match(input)
+                break
+            } catch (e: MatchNotFoundException) {
+                // Maybe log this?
+            }
         }
 
-        match = matches.get(0)!!.value
-        input = input.replace(match, "")
+        if (result == null) {
+            throw ParseException("No match found.")
+        }
 
-        return token
+        input = input.replaceFirstLiteral(result.rawMatch, "")
+
+        return result.token
     }
 }
