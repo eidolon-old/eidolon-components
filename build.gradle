@@ -1,5 +1,6 @@
 buildscript {
     ext.kotlinVersion = "0.12.613"
+    ext.spekVersion = "0.1-SNAPSHOT"
 
     repositories {
         jcenter()
@@ -20,11 +21,37 @@ allprojects {
 
     repositories {
         mavenCentral()
+        maven {
+            url "http://repository.jetbrains.com/all"
+        }
     }
 
     dependencies {
         compile "org.jetbrains.kotlin:kotlin-runtime:${kotlinVersion}"
         compile "org.jetbrains.kotlin:kotlin-stdlib:${kotlinVersion}"
+        testCompile "org.jetbrains.spek:spek:${spekVersion}"
+    }
+
+    test {
+//        testLogging {
+//            events "passed", "skipped", "failed"
+//        }
+
+        afterTest { desc, result ->
+            switch (result) {
+                case TestResult.ResultType.SUCCESS:
+                    print(".")
+                    break;
+                case TestResult.ResultType.SKIPPED:
+                    print("S")
+                    break;
+                case TestResult.ResultType.FAILURE:
+                    print("F")
+                    break;
+                default:
+                    print("?")
+            }
+        }
     }
 }
 
