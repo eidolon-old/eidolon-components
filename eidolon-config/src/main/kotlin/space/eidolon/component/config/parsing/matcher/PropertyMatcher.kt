@@ -14,7 +14,7 @@ package space.eidolon.component.config.parsing.matcher
 import space.eidolon.component.config.parsing.PropertyToken
 import space.eidolon.component.config.parsing.Token
 import space.eidolon.component.config.parsing.exception.MatchNotFoundException
-import kotlin.text.Regex
+import java.util.regex.Pattern
 
 /**
  * PropertyMatcher
@@ -22,20 +22,18 @@ import kotlin.text.Regex
  * @author Elliot Wright <elliot@elliotwright.co>
  */
 public class PropertyMatcher : Matcher {
-    private val pattern = Regex("""^\s*(\"?)([\w-]+)\1\s*\:\s*""")
+    private val pattern = Pattern.compile("""^\s*(\"?)([\w-]+)\1\s*\:\s*""")
 
     /**
      * {@inheritDoc}
      */
     public override fun match(input: String): MatcherResult {
-        val matches = pattern.match(input)
+        val matcher = pattern.matcher(input)
 
-        if (matches != null) {
-            val groups = matches.groups
-
+        if (matcher.find()) {
             return MatcherResult(
-                PropertyToken(groups.get(2)!!.value),
-                groups.get(0)!!.value
+                PropertyToken(matcher.group(2)),
+                matcher.group(0)
             )
         }
 
